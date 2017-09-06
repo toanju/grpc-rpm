@@ -1,0 +1,14 @@
+--- Makefile.orig	2017-06-13 21:25:13.914839490 +0000
++++ Makefile	2017-06-13 21:26:16.482770657 +0000
+@@ -337,9 +337,9 @@
+ HOST_LD ?= $(LD)
+ HOST_LDXX ?= $(LDXX)
+ 
+-CFLAGS += -std=c99 -Wsign-conversion -Wconversion $(W_SHADOW) $(W_EXTRA_SEMI)
++CFLAGS += -std=c99 -Wsign-conversion -Wconversion $(W_SHADOW) $(W_EXTRA_SEMI) -Wno-error=conversion -Wno-error=implicit-fallthrough
+ CXXFLAGS += -std=c++11
+-CPPFLAGS += -g -Wall -Wextra -Werror -Wno-long-long -Wno-unused-parameter -DOSATOMIC_USE_INLINED=1
++CPPFLAGS += -g -Wall -Wextra -Werror -Wno-long-long -Wno-unused-parameter -DOSATOMIC_USE_INLINED=1
+ LDFLAGS += -g
+ 
+ CPPFLAGS += $(CPPFLAGS_$(CONFIG))

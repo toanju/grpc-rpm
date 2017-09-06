@@ -1,0 +1,13 @@
+diff -ru grpc-1.4.1/src/core/lib/security/transport/security_connector.c grpc-1.4.1-new/src/core/lib/security/transport/security_connector.c
+--- grpc-1.4.1/src/core/lib/security/transport/security_connector.c	2017-06-27 19:46:01.000000000 +0000
++++ grpc-1.4.1-new/src/core/lib/security/transport/security_connector.c	2017-06-28 21:12:36.009052862 +0000
+@@ -80,7 +80,7 @@
+ /* Defines the cipher suites that we accept by default. All these cipher suites
+    are compliant with HTTP2. */
+ #define GRPC_SSL_CIPHER_SUITES \
+-  "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384"
++  "PROFILE=SYSTEM"
+ 
+ static gpr_once cipher_suites_once = GPR_ONCE_INIT;
+ static const char *cipher_suites = NULL;
+Only in grpc-1.4.1-new/src/core/lib/security/transport: security_connector.c~
