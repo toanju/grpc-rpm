@@ -1,16 +1,27 @@
 Summary: gRPC, A high performance, open-source universal RPC framework
 Name: grpc
-Version: 1.4.5
-Release: 1%{?dist}
+Version: 1.6.6
+Release: 2%{?dist}
 License: BSD
 URL: http://www.grpc.io/
 Source0: https://github.com/grpc/grpc/archive/v%{version}.tar.gz
-Patch0: grpc-1.4.1-warnings.patch
-Patch1: grpc-1.4.1-openssl.patch
-Patch2: grpc-1.4.1-cryptopolicy.patch
+Patch0: Transitioning-from-the-deprecated-TLSv1_2_-method-fu.patch
+Patch1: Fix-warnings-with-GCC-7.patch
+Patch2: pkg-config-needs-an-argument.patch
+Patch3: check-for-protobuf-3.4.0.patch
+Patch4: add-LDFLAGS_PROTOBUF_PKG_CONFIG-to-LDFLAGS.patch
+Patch5: grpc-1.4.1-cryptopolicy.patch
 
 BuildRequires: pkgconfig gcc-c++
-BuildRequires: protobuf-devel protobuf-compiler c-ares-devel openssl-devel
+BuildRequires: protobuf-devel
+BuildRequires: protobuf-compiler
+BuildRequires: openssl-devel
+%if 0%{?rhel}
+BuildRequires: git
+BuildRequires: iproute
+%else
+BuildRequires: c-ares-devel
+%endif
 
 %description
 Remote Procedure Calls (RPCs) provide a useful abstraction for
@@ -43,9 +54,17 @@ Static libraries for gRPC.
 
 %prep
 %setup -q
-%patch0
-%patch1
+%if 0%{?fedora} > 25
+%patch0 -p1
+%endif
+%patch1 -p1
 %patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%if 0%{?rhel}
+git clone -b cares-1_12_0 https://github.com/c-ares/c-ares.git third_party/cares/cares
+%endif
 
 %build
 %make_build
@@ -68,14 +87,14 @@ rm -rf %{buildroot}
 
 %files
 %doc README.md
-%license LICENSE PATENTS
+%license LICENSE
 %{_libdir}/*.so.*
 %{_datadir}/grpc
 %attr(0644, root, root) %{_datadir}/grpc/roots.pem
 
 %files plugins
 %doc README.md
-%license LICENSE PATENTS
+%license LICENSE
 %{_bindir}/*
 
 %files devel
@@ -87,6 +106,8 @@ rm -rf %{buildroot}
 %attr(0644, root, root) %{_libdir}/*.a
 
 %changelog
+* Sun Oct 15 2017 Tobias Jungel <tobias.jungel@gmail.com> - 1.6.6-1
+- Update upstream
 * Wed Sep 06 2017 Jeff Mendoza <jeffmendoza@google.com> - 1.4.5-1
 - Update upstream
 * Wed Jun 28 2017 Jeff Mendoza <jeffmendoza@google.com> - 1.4.1-1

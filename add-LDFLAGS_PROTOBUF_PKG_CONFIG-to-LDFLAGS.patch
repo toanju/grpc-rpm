@@ -1,0 +1,25 @@
+From f90e418625d90cc7818d7f84fc98738f9e23ea58 Mon Sep 17 00:00:00 2001
+From: Tobias Jungel <tobias.jungel@gmail.com>
+Date: Wed, 4 Oct 2017 14:00:15 +0200
+Subject: [PATCH 5/5] add LDFLAGS_PROTOBUF_PKG_CONFIG to LDFLAGS
+
+LDFLAGS were not update in case pkg-config is used
+---
+ Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Makefile b/Makefile
+index ba34c4bcc1..384ac985f9 100644
+--- a/Makefile
++++ b/Makefile
+@@ -791,6 +791,7 @@ ifneq ($(LDFLAGS_PROTOBUF_PKG_CONFIG),)
+ LDFLAGS_PROTOBUF_PKG_CONFIG += $(shell $(PKG_CONFIG) --libs-only-L protobuf | sed s/L/Wl,-rpath,/)
+ endif
+ endif
++LDFLAGS := $(LDFLAGS_PROTOBUF_PKG_CONFIG) $(LDFLAGS)
+ else
+ PC_LIBS_GRPCXX = -lprotobuf
+ endif
+-- 
+2.13.6
+

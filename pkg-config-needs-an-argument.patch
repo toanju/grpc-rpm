@@ -1,0 +1,33 @@
+From 42cffeb8908ea7835f07b7f4a98e1906a71b73c2 Mon Sep 17 00:00:00 2001
+From: Tobias Jungel <tobias.jungel@gmail.com>
+Date: Wed, 4 Oct 2017 13:01:08 +0200
+Subject: [PATCH 3/5] pkg-config needs an argument
+
+running pkg-config without an argument fails:
+
+$ pkg-config
+Must specify package names on the command line
+$ echo $?
+1
+
+thus --help is added to the check.
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 0c591d4086..6582b3bdd8 100644
+--- a/Makefile
++++ b/Makefile
+@@ -442,7 +442,7 @@ HOST_LDLIBS = $(LDLIBS)
+ 
+ CACHE_MK =
+ 
+-HAS_PKG_CONFIG ?= $(shell command -v $(PKG_CONFIG) >/dev/null 2>&1 && echo true || echo false)
++HAS_PKG_CONFIG ?= $(shell command -v $(PKG_CONFIG) --help >/dev/null 2>&1 && echo true || echo false)
+ 
+ ifeq ($(HAS_PKG_CONFIG), true)
+ CACHE_MK += HAS_PKG_CONFIG = true,
+-- 
+2.13.6
+
