@@ -1,12 +1,13 @@
 Summary: gRPC, A high performance, open-source universal RPC framework
 Name: grpc
-Version: 1.8.4
+Version: 1.8.5
 Release: 1%{?dist}
 License: BSD
 URL: http://www.grpc.io/
 Source0: https://github.com/grpc/grpc/archive/v%{version}.tar.gz
 Patch0: Silence_openssl_1.1.0_warnings.patch
 Patch1: Add-pkgconfig-results-to-LDFLAGS.patch
+Patch2: remove_core_stats.h_from_installed_headers.patch
 
 BuildRequires: pkgconfig gcc-c++
 BuildRequires: protobuf-devel
@@ -57,6 +58,7 @@ Static libraries for gRPC.
 %if 0%{?rhel}
 git clone -b cares-1_12_0 https://github.com/c-ares/c-ares.git third_party/cares/cares
 %endif
+%patch2 -p1
 
 %build
 %make_build
@@ -98,6 +100,8 @@ rm -rf %{buildroot}
 %attr(0644, root, root) %{_libdir}/*.a
 
 %changelog
+* Mon Jan 22 2018 Tobias Jungel <tobias.jungel@gmail.com> - 1.8.5-1
+- Update upstream
 * Sun Oct 15 2017 Tobias Jungel <tobias.jungel@gmail.com> - 1.6.6-1
 - Update upstream
 * Wed Sep 06 2017 Jeff Mendoza <jeffmendoza@google.com> - 1.4.5-1
