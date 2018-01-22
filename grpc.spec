@@ -1,16 +1,12 @@
 Summary: gRPC, A high performance, open-source universal RPC framework
 Name: grpc
-Version: 1.6.6
-Release: 2%{?dist}
+Version: 1.8.4
+Release: 1%{?dist}
 License: BSD
 URL: http://www.grpc.io/
 Source0: https://github.com/grpc/grpc/archive/v%{version}.tar.gz
-Patch0: Transitioning-from-the-deprecated-TLSv1_2_-method-fu.patch
-Patch1: Fix-warnings-with-GCC-7.patch
-Patch2: pkg-config-needs-an-argument.patch
-Patch3: check-for-protobuf-3.4.0.patch
-Patch4: add-LDFLAGS_PROTOBUF_PKG_CONFIG-to-LDFLAGS.patch
-Patch5: grpc-1.4.1-cryptopolicy.patch
+Patch0: Silence_openssl_1.1.0_warnings.patch
+Patch1: Add-pkgconfig-results-to-LDFLAGS.patch
 
 BuildRequires: pkgconfig gcc-c++
 BuildRequires: protobuf-devel
@@ -58,10 +54,6 @@ Static libraries for gRPC.
 %patch0 -p1
 %endif
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
 %if 0%{?rhel}
 git clone -b cares-1_12_0 https://github.com/c-ares/c-ares.git third_party/cares/cares
 %endif
