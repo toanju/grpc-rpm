@@ -1,0 +1,40 @@
+From 9befdeeace0f7b63a2a5403fc079878e4141edfc Mon Sep 17 00:00:00 2001
+From: Martin Guenther <martin.guenther@dfki.de>
+Date: Thu, 15 Sep 2016 15:00:40 +0200
+Subject: [PATCH 1/7] Add pkgconfig results to LDFLAGS
+
+Without this patch, the linker doesn't find `-lprotobuf` when protobuf
+is installed to a location that is not on the linker's default search
+path.
+---
+ Makefile                    | 1 +
+ templates/Makefile.template | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/Makefile b/Makefile
+index b2276f41e4..14ad43aebf 100644
+--- a/Makefile
++++ b/Makefile
+@@ -797,6 +797,7 @@ ifneq ($(LDFLAGS_PROTOBUF_PKG_CONFIG),)
+ LDFLAGS_PROTOBUF_PKG_CONFIG += $(shell $(PKG_CONFIG) --libs-only-L protobuf | sed s/L/Wl,-rpath,/)
+ endif
+ endif
++LDFLAGS := $(LDFLAGS_PROTOBUF_PKG_CONFIG) $(LDFLAGS)
+ else
+ PC_LIBS_GRPCXX = -lprotobuf
+ endif
+diff --git a/templates/Makefile.template b/templates/Makefile.template
+index b8e26b646b..5b626636a7 100644
+--- a/templates/Makefile.template
++++ b/templates/Makefile.template
+@@ -716,6 +716,7 @@
+   LDFLAGS_PROTOBUF_PKG_CONFIG += $(shell $(PKG_CONFIG) --libs-only-L protobuf | sed s/L/Wl,-rpath,/)
+   endif
+   endif
++  LDFLAGS := $(LDFLAGS_PROTOBUF_PKG_CONFIG) $(LDFLAGS)
+   else
+   PC_LIBS_GRPCXX = -lprotobuf
+   endif
+-- 
+2.14.3
+

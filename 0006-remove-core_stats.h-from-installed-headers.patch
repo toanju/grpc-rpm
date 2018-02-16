@@ -1,17 +1,20 @@
-From d1a8da2fe069dea30e903f7d19479b8c83c63576 Mon Sep 17 00:00:00 2001
+From e5900f26d8c4d1c2074352277e0928d6c200e5d7 Mon Sep 17 00:00:00 2001
 From: Tobias Jungel <tobias.jungel@gmail.com>
 Date: Mon, 22 Jan 2018 22:25:40 +0100
-Subject: remove core_stats.h from installed headers
+Subject: [PATCH 6/7] remove core_stats.h from installed headers
 
 core_stats.h is installed in a non standard directory and originates
 from the source directory. Hence this PR removes it from beeing
 installed.
+---
+ Makefile | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index ada461fb37..d4eda102dc 100644
+index f09a4c0193..45005654ff 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -4765,9 +4765,6 @@ LIBGRPC++_CORE_STATS_SRC = \
+@@ -4778,9 +4778,6 @@ LIBGRPC++_CORE_STATS_SRC = \
      $(GENDIR)/src/proto/grpc/core/stats.pb.cc $(GENDIR)/src/proto/grpc/core/stats.grpc.pb.cc \
      src/cpp/util/core_stats.cc \
  
@@ -21,3 +24,6 @@ index ada461fb37..d4eda102dc 100644
  LIBGRPC++_CORE_STATS_OBJS = $(addprefix $(OBJDIR)/$(CONFIG)/, $(addsuffix .o, $(basename $(LIBGRPC++_CORE_STATS_SRC))))
  
  
+-- 
+2.14.3
+
