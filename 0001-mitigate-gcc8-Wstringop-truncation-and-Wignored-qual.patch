@@ -1,10 +1,10 @@
-From e908b61046356f0257ba72eeda4e55f0761c8b68 Mon Sep 17 00:00:00 2001
+From 2a9309b285a337bcd35f1c554512634415f22a16 Mon Sep 17 00:00:00 2001
 From: Tobias Jungel <tobias.jungel@gmail.com>
 Date: Fri, 16 Feb 2018 15:07:13 +0100
-Subject: [PATCH 5/7] mitigate gcc8 -Wstringop-truncation
+Subject: [PATCH 1/2] mitigate gcc8 -Wstringop-truncation and
+ -Wignored-qualifiers
 
-even though the string length is checked before gcc will raise the
-warning stringop-truncation. This PR mitigates the warning.
+this PR deals with the warnings of ggc8
 ---
  .../ext/filters/client_channel/lb_policy/grpclb/load_balancer_api.cc    | 2 +-
  src/core/ext/transport/chttp2/transport/flow_control.cc                 | 2 +-
@@ -12,10 +12,10 @@ warning stringop-truncation. This PR mitigates the warning.
  3 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/src/core/ext/filters/client_channel/lb_policy/grpclb/load_balancer_api.cc b/src/core/ext/filters/client_channel/lb_policy/grpclb/load_balancer_api.cc
-index fc781da330..c79e446ca5 100644
+index 7ef3bcf24f..3a00acc2a9 100644
 --- a/src/core/ext/filters/client_channel/lb_policy/grpclb/load_balancer_api.cc
 +++ b/src/core/ext/filters/client_channel/lb_policy/grpclb/load_balancer_api.cc
-@@ -66,7 +66,7 @@ grpc_grpclb_request* grpc_grpclb_request_create(const char* lb_service_name) {
+@@ -68,7 +68,7 @@ grpc_grpclb_request* grpc_grpclb_request_create(const char* lb_service_name) {
    req->has_initial_request = true;
    req->initial_request.has_name = true;
    strncpy(req->initial_request.name, lb_service_name,
@@ -25,31 +25,31 @@ index fc781da330..c79e446ca5 100644
  }
  
 diff --git a/src/core/ext/transport/chttp2/transport/flow_control.cc b/src/core/ext/transport/chttp2/transport/flow_control.cc
-index 581241d392..6a0815b00f 100644
+index e89c363200..552a7c3e3e 100644
 --- a/src/core/ext/transport/chttp2/transport/flow_control.cc
 +++ b/src/core/ext/transport/chttp2/transport/flow_control.cc
-@@ -185,7 +185,7 @@ TransportFlowControl::TransportFlowControl(const grpc_chttp2_transport* t,
- 
+@@ -187,7 +187,7 @@ TransportFlowControl::TransportFlowControl(const grpc_chttp2_transport* t,
  uint32_t TransportFlowControl::MaybeSendUpdate(bool writing_anyway) {
    FlowControlTrace trace("t updt sent", this, nullptr);
--  const uint32_t target_announced_window = (const uint32_t)target_window();
-+  const uint32_t target_announced_window = (uint32_t)target_window();
+   const uint32_t target_announced_window =
+-      static_cast<const uint32_t>(target_window());
++      static_cast<uint32_t>(target_window());
    if ((writing_anyway || announced_window_ <= target_announced_window / 2) &&
        announced_window_ != target_announced_window) {
-     const uint32_t announce = (uint32_t)GPR_CLAMP(
+     const uint32_t announce = static_cast<uint32_t> GPR_CLAMP(
 diff --git a/src/core/lib/iomgr/unix_sockets_posix.cc b/src/core/lib/iomgr/unix_sockets_posix.cc
-index af862c00dc..c5a974cf8b 100644
+index 22fcaf57fc..d84c7c5018 100644
 --- a/src/core/lib/iomgr/unix_sockets_posix.cc
 +++ b/src/core/lib/iomgr/unix_sockets_posix.cc
-@@ -57,7 +57,7 @@ grpc_error* grpc_resolve_unix_domain_address(const char* name,
-       (grpc_resolved_address*)gpr_malloc(sizeof(grpc_resolved_address));
-   un = (struct sockaddr_un*)(*addrs)->addrs->addr;
+@@ -60,7 +60,7 @@ grpc_error* grpc_resolve_unix_domain_address(const char* name,
+       gpr_malloc(sizeof(grpc_resolved_address)));
+   un = reinterpret_cast<struct sockaddr_un*>((*addrs)->addrs->addr);
    un->sun_family = AF_UNIX;
 -  strncpy(un->sun_path, name, sizeof(un->sun_path));
 +  strncpy(un->sun_path, name, sizeof(un->sun_path) - 1);
-   (*addrs)->addrs->len = strlen(un->sun_path) + sizeof(un->sun_family) + 1;
+   (*addrs)->addrs->len =
+       static_cast<socklen_t>(strlen(un->sun_path) + sizeof(un->sun_family) + 1);
    return GRPC_ERROR_NONE;
- }
 -- 
 2.14.3
 

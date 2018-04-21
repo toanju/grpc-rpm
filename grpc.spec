@@ -1,18 +1,13 @@
 Summary: gRPC, A high performance, open-source universal RPC framework
 Name: grpc
-Version: 1.9.1
+Version: 1.11.0
 Release: 1%{?dist}
 License: BSD
 URL: http://www.grpc.io/
 Source0: https://github.com/grpc/grpc/archive/v%{version}.tar.gz
 
-Patch0: 0001-Add-pkgconfig-results-to-LDFLAGS.patch
-Patch1: 0002-grpc-cli-add-install-grpc-cli-target-to-Makefile.patch
-Patch2: 0003-applied-github-13500.patch
-Patch3: 0004-fix-non-virtual-dtor.patch
-Patch4: 0005-mitigate-gcc8-Wstringop-truncation.patch
-Patch5: 0006-remove-core_stats.h-from-installed-headers.patch
-Patch6: 0007-Generate-projects-properly.patch
+Patch0: 0001-mitigate-gcc8-Wstringop-truncation-and-Wignored-qual.patch
+Patch1: 0002-mitigate-gcc8-Werror-class-memaccess.patch
 
 BuildRequires: pkgconfig gcc-c++
 BuildRequires: protobuf-devel >= 3.5
@@ -68,13 +63,8 @@ Static libraries for gRPC.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
 %if 0%{?rhel}
-git clone -b cares-1_12_0 https://github.com/c-ares/c-ares.git third_party/cares/cares
+git clone -b cares-1_13_0 https://github.com/c-ares/c-ares.git third_party/cares/cares
 %endif
 # goolgetest is pretty hardwired to the third_party dir
 git clone -b release-1.8.0 https://github.com/google/googletest.git third_party/googletest
@@ -123,6 +113,8 @@ rm -rf %{buildroot}
 %attr(0644, root, root) %{_libdir}/*.a
 
 %changelog
+* Sat Apr 21 2018 Tobias Jungel <tobias.jungel@gmail.com> - 1.11.0-1
+- Update to upsteam release
 * Fri Feb 16 2018 Tobias Jungel <tobias.jungel@gmail.com> - 1.9.1-1
 - Update to upsteam release
 - add grpc_cli

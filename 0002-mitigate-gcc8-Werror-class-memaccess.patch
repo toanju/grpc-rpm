@@ -1,0 +1,53 @@
+From 22eeeb0b679c60d0e771a6f5d4947be874e5f8f4 Mon Sep 17 00:00:00 2001
+From: Tobias Jungel <tobias.jungel@gmail.com>
+Date: Sat, 21 Apr 2018 15:16:32 +0200
+Subject: [PATCH 2/2] mitigate gcc8 -Werror=class-memaccess
+
+---
+ src/core/ext/filters/client_channel/client_channel.cc | 2 +-
+ src/core/lib/surface/channel.cc                       | 2 +-
+ src/core/tsi/alts_transport_security.cc               | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/core/ext/filters/client_channel/client_channel.cc b/src/core/ext/filters/client_channel/client_channel.cc
+index 33cf56519e..ad650c0eba 100644
+--- a/src/core/ext/filters/client_channel/client_channel.cc
++++ b/src/core/ext/filters/client_channel/client_channel.cc
+@@ -416,7 +416,7 @@ static void on_resolver_result_changed_locked(void* arg, grpc_error* error) {
+             grpc_uri* uri = grpc_uri_parse(server_uri, true);
+             GPR_ASSERT(uri->path[0] != '\0');
+             service_config_parsing_state parsing_state;
+-            memset(&parsing_state, 0, sizeof(parsing_state));
++            memset(static_cast<void*>(&parsing_state), 0, sizeof(parsing_state));
+             parsing_state.server_name =
+                 uri->path[0] == '/' ? uri->path + 1 : uri->path;
+             service_config->ParseGlobalParams(parse_retry_throttle_params,
+diff --git a/src/core/lib/surface/channel.cc b/src/core/lib/surface/channel.cc
+index d740ebd411..c400668c5c 100644
+--- a/src/core/lib/surface/channel.cc
++++ b/src/core/lib/surface/channel.cc
+@@ -103,7 +103,7 @@ grpc_channel* grpc_channel_create_with_builder(
+     return channel;
+   }
+ 
+-  memset(channel, 0, sizeof(*channel));
++  memset(static_cast<void*>(channel), 0, sizeof(*channel));
+   channel->target = target;
+   channel->is_client = grpc_channel_stack_type_is_client(channel_stack_type);
+   size_t channel_tracer_max_nodes = 0;  // default to off
+diff --git a/src/core/tsi/alts_transport_security.cc b/src/core/tsi/alts_transport_security.cc
+index 2fd408103b..c1fd0684c7 100644
+--- a/src/core/tsi/alts_transport_security.cc
++++ b/src/core/tsi/alts_transport_security.cc
+@@ -45,7 +45,7 @@ void grpc_tsi_alts_signal_for_cq_destroy() {
+ }
+ 
+ void grpc_tsi_alts_init() {
+-  memset(&g_alts_resource, 0, sizeof(alts_shared_resource));
++  memset(static_cast<void*>(&g_alts_resource), 0, sizeof(alts_shared_resource));
+   gpr_mu_init(&g_alts_resource.mu);
+   gpr_cv_init(&g_alts_resource.cv);
+ }
+-- 
+2.14.3
+
