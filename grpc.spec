@@ -1,6 +1,6 @@
 Summary: gRPC, A high performance, open-source universal RPC framework
 Name: grpc
-Version: 1.11.0
+Version: 1.11.1
 Release: 1%{?dist}
 License: BSD
 URL: http://www.grpc.io/
@@ -113,6 +113,8 @@ rm -rf %{buildroot}
 %attr(0644, root, root) %{_libdir}/*.a
 
 %changelog
+* Tue May 15 2018 Tobias Jungel <tobias.jungel@gmail.com> - 1.11.1-1
+- Update to upsteam release
 * Sat Apr 21 2018 Tobias Jungel <tobias.jungel@gmail.com> - 1.11.0-1
 - Update to upsteam release
 * Fri Feb 16 2018 Tobias Jungel <tobias.jungel@gmail.com> - 1.9.1-1
