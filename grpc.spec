@@ -1,6 +1,6 @@
 Summary: gRPC, A high performance, open-source universal RPC framework
 Name: grpc
-Version: 1.11.1
+Version: 1.12.0
 Release: 1%{?dist}
 License: BSD
 URL: http://www.grpc.io/
