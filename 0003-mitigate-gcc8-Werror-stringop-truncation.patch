@@ -1,0 +1,26 @@
+From f56a364b057996f1a81e0759c04bc0b0345aba1a Mon Sep 17 00:00:00 2001
+From: Tobias Jungel <tobias.jungel@gmail.com>
+Date: Wed, 22 Aug 2018 21:17:01 +0200
+Subject: [PATCH 3/3] mitigate gcc8 -Werror=stringop-truncation
+
+---
+ .../client_channel/lb_policy/grpclb/load_balancer_api.cc       | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/core/ext/filters/client_channel/lb_policy/grpclb/load_balancer_api.cc b/src/core/ext/filters/client_channel/lb_policy/grpclb/load_balancer_api.cc
+index f24281a5bf..8c06421472 100644
+--- a/src/core/ext/filters/client_channel/lb_policy/grpclb/load_balancer_api.cc
++++ b/src/core/ext/filters/client_channel/lb_policy/grpclb/load_balancer_api.cc
+@@ -68,7 +68,8 @@ grpc_grpclb_request* grpc_grpclb_request_create(const char* lb_service_name) {
+   req->has_initial_request = true;
+   req->initial_request.has_name = true;
+   strncpy(req->initial_request.name, lb_service_name,
+-          GRPC_GRPCLB_SERVICE_NAME_MAX_LENGTH);
++          GRPC_GRPCLB_SERVICE_NAME_MAX_LENGTH - 1);
++  req->initial_request.name[GRPC_GRPCLB_SERVICE_NAME_MAX_LENGTH - 1] = '\0';
+   return req;
+ }
+ 
+-- 
+2.17.1
+

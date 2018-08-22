@@ -1,0 +1,25 @@
+From b9fcc6777662f506d3fe1c6dda6fff0c13780e5e Mon Sep 17 00:00:00 2001
+From: Tobias Jungel <tobias.jungel@gmail.com>
+Date: Wed, 22 Aug 2018 21:14:46 +0200
+Subject: [PATCH 2/3] mitigate gcc8 -Werror=ignored-qualifiers
+
+---
+ src/core/ext/transport/chttp2/transport/flow_control.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/core/ext/transport/chttp2/transport/flow_control.cc b/src/core/ext/transport/chttp2/transport/flow_control.cc
+index e89c363200..552a7c3e3e 100644
+--- a/src/core/ext/transport/chttp2/transport/flow_control.cc
++++ b/src/core/ext/transport/chttp2/transport/flow_control.cc
+@@ -187,7 +187,7 @@ TransportFlowControl::TransportFlowControl(const grpc_chttp2_transport* t,
+ uint32_t TransportFlowControl::MaybeSendUpdate(bool writing_anyway) {
+   FlowControlTrace trace("t updt sent", this, nullptr);
+   const uint32_t target_announced_window =
+-      static_cast<const uint32_t>(target_window());
++      static_cast<uint32_t>(target_window());
+   if ((writing_anyway || announced_window_ <= target_announced_window / 2) &&
+       announced_window_ != target_announced_window) {
+     const uint32_t announce = static_cast<uint32_t> GPR_CLAMP(
+-- 
+2.17.1
+
