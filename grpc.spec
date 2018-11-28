@@ -1,18 +1,17 @@
 Summary: gRPC, A high performance, open-source universal RPC framework
 Name: grpc
-Version: 1.15.0
+Version: 1.16.1
 Release: 1%{?dist}
 License: BSD
 URL: http://www.grpc.io/
 Source0: https://github.com/grpc/grpc/archive/v%{version}.tar.gz
 
-Patch0: 0001-mitigate-gcc8-Werror-class-memaccess.patch
-Patch1: 0002-mitigate-gcc8-Werror-ignored-qualifiers.patch
-Patch2: 0003-mitigate-gcc8-Werror-stringop-truncation.patch
+Patch0: 0002-mitigate-gcc8-Werror-ignored-qualifiers.patch
+Patch1: 0003-mitigate-gcc8-Werror-stringop-truncation.patch
 
 BuildRequires: pkgconfig gcc-c++
-BuildRequires: protobuf-devel >= 3.5
-BuildRequires: protobuf-compiler >= 3.5
+BuildRequires: protobuf-devel >= 3.6
+BuildRequires: protobuf-compiler >= 3.6
 BuildRequires: openssl-devel
 BuildRequires: gtest-devel
 BuildRequires: git
@@ -32,7 +31,7 @@ clients and servers using any combination of the supported languages.
 %package plugins
 Summary: gRPC protocol buffers compiler plugins
 Requires: %{name}%{?_isa} = %{version}-%{release}
-Requires: protobuf-compiler >= 3.5
+Requires: protobuf-compiler >= 3.6
 
 %description plugins
 Plugins to the protocol buffers compiler to generate gRPC sources.
@@ -64,7 +63,6 @@ Static libraries for gRPC.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 %if 0%{?rhel}
 git clone -b cares-1_13_0 https://github.com/c-ares/c-ares.git third_party/cares/cares
 %endif
@@ -115,6 +113,8 @@ rm -rf %{buildroot}
 %attr(0644, root, root) %{_libdir}/*.a
 
 %changelog
+* Wed Nov 28 2018 Tobias Jungel <tobias.jungel@gmail.com> - 1.16.1-1
+- Update to 1.16.1
 * Tue May 15 2018 Tobias Jungel <tobias.jungel@gmail.com> - 1.11.1-1
 - Update to upsteam release
 * Sat Apr 21 2018 Tobias Jungel <tobias.jungel@gmail.com> - 1.11.0-1
