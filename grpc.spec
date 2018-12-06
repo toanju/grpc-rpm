@@ -1,13 +1,14 @@
 Summary: gRPC, A high performance, open-source universal RPC framework
 Name: grpc
-Version: 1.16.1
+Version: 1.17.0
 Release: 1%{?dist}
 License: BSD
 URL: http://www.grpc.io/
 Source0: https://github.com/grpc/grpc/archive/v%{version}.tar.gz
 
-Patch0: 0002-mitigate-gcc8-Werror-ignored-qualifiers.patch
-Patch1: 0003-mitigate-gcc8-Werror-stringop-truncation.patch
+Patch0: 0001-handle-Werror-class-memaccess.patch
+Patch1: 0002-mitigate-gcc8-Werror-ignored-qualifiers.patch
+Patch2: 0003-mitigate-gcc8-Werror-stringop-truncation.patch
 
 BuildRequires: pkgconfig gcc-c++
 BuildRequires: protobuf-devel >= 3.6
@@ -63,6 +64,7 @@ Static libraries for gRPC.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 %if 0%{?rhel}
 git clone -b cares-1_13_0 https://github.com/c-ares/c-ares.git third_party/cares/cares
 %endif

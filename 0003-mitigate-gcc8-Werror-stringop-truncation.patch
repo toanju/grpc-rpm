@@ -1,11 +1,12 @@
-From f56a364b057996f1a81e0759c04bc0b0345aba1a Mon Sep 17 00:00:00 2001
+From 5dae3dbe03344a578dccc762fd21fbde52259d14 Mon Sep 17 00:00:00 2001
 From: Tobias Jungel <tobias.jungel@gmail.com>
 Date: Wed, 22 Aug 2018 21:17:01 +0200
 Subject: [PATCH 3/3] mitigate gcc8 -Werror=stringop-truncation
 
 ---
  .../client_channel/lb_policy/grpclb/load_balancer_api.cc       | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ .../client_channel/lb_policy/xds/xds_load_balancer_api.cc      | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/src/core/ext/filters/client_channel/lb_policy/grpclb/load_balancer_api.cc b/src/core/ext/filters/client_channel/lb_policy/grpclb/load_balancer_api.cc
 index f24281a5bf..8c06421472 100644
@@ -21,6 +22,19 @@ index f24281a5bf..8c06421472 100644
    return req;
  }
  
+diff --git a/src/core/ext/filters/client_channel/lb_policy/xds/xds_load_balancer_api.cc b/src/core/ext/filters/client_channel/lb_policy/xds/xds_load_balancer_api.cc
+index 79b7bdbe33..a2e18e62a6 100644
+--- a/src/core/ext/filters/client_channel/lb_policy/xds/xds_load_balancer_api.cc
++++ b/src/core/ext/filters/client_channel/lb_policy/xds/xds_load_balancer_api.cc
+@@ -68,7 +68,7 @@ xds_grpclb_request* xds_grpclb_request_create(const char* lb_service_name) {
+   req->has_initial_request = true;
+   req->initial_request.has_name = true;
+   strncpy(req->initial_request.name, lb_service_name,
+-          XDS_SERVICE_NAME_MAX_LENGTH);
++          XDS_SERVICE_NAME_MAX_LENGTH-1);
+   return req;
+ }
+ 
 -- 
-2.17.1
+2.19.2
 
